@@ -2,35 +2,23 @@ const express = require("express"); // iniciando o express
 const router = express.Router(); // configurando primeira parte da rota
 const { v4: uuidv4 } = require("uuid");
 
+const conectaBancoDeDados = require("./bancoDeDados"); // aqui ligando ao arquivo banco de dados
+conectaBancoDeDados(); // chamando a funcao
+const Mulher = require("./mulherModel");
+
 const app = express(); // iniciando o app
 app.use(express.json());
 const porta = 3333; // Criando a porta
 
-//Criando lista inicial de mulheres
-const mulheres = [
-  {
-    id: "1",
-    nome: "Mayra Malaquias",
-    Image: "WhatsApp Image 2023-01-26 at 14.19.02 (1).jpeg",
-    minibio: " Desenvolvedora Fullstack",
-  },
-  {
-    id: "2",
-    nome: "Laura passos",
-    Image: "minin",
-    minibio: " Desenvolvedora back-end",
-  },
-  {
-    id: "3",
-    nome: "Maria Betania",
-    Image: "WhatsApp Image 2023-01-26 at 14.19.02 (1).jpeg",
-    minibio: " Desenvolvedora front-end",
-  },
-];
-
 //GET
-function mostraMulheres(request, response) {
-  response.json(mulheres);
+async function mostraMulheres(request, response) {
+  try {
+    const mulheresVindasDoBancoDeDados = await Mulher.find();
+
+    response.json(mulheresVindasDoBancoDeDados);
+  } catch (erro) {
+    console.log(erro);
+  }
 }
 //POST
 function criaMulher(request, response) {
